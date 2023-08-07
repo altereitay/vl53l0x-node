@@ -67,7 +67,7 @@ const REG = {
     VCSEL_PERIOD_FINAL_RANGE: 1,
 }
 
-export const tuning = [
+const tuning = [
     0xff,
     0x01,
     0x00,
@@ -230,4 +230,4 @@ export const tuning = [
     0x00,
 ]
 
-module.exports = {REG};
+module.exports = {REG, tuning};
