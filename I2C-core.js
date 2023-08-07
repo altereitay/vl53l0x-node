@@ -3,6 +3,7 @@ const {decodeTimeout} = require('./utils/encode-decode');
 const {timeoutMclksToMicroseconds} = require('./utils/calcs');
 const {calcCommonBudget} = require('./utils/budget');
 const {BinaryValue, Gpio} = require('onoff');
+const {REG} = require('./utils/REG');
 
 class I2CCore {
     _busModule
