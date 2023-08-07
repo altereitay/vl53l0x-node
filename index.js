@@ -2,7 +2,7 @@ const {timeoutMicrosecondsToMclks} = require('./utils/calcs');
 const {encodeTimeout, encodeVcselPeriod} = require('./utils/encode-decode');
 const {BytesWritten} = require('i2c-bus')
 const {I2CCore} = require('./I2C-core');
-const {REG} = require('./utils/REG');
+const {REG, tuning} = require('./utils/REG');
 
 
 class VL53L0X extends I2CCore {
