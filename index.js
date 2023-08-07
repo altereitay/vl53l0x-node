@@ -4,7 +4,7 @@ const {BytesWritten} = require('i2c-bus')
 const I2CCore = require('./I2C-core');
 const REG = require('./utils/REG');
 
-export default class VL53L0X extends I2CCore {
+class VL53L0X extends I2CCore {
     constructor (address = REG.I2C_DEFAULT_ADDR, bus = 1) {
         super(address, bus)
     }
@@ -493,3 +493,5 @@ export default class VL53L0X extends I2CCore {
         }
     }
 }
+
+module.exports = {VL53L0X};
