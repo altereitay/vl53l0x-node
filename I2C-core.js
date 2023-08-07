@@ -19,7 +19,7 @@ class I2CCore {
         regAddressRead: REG.RESULT_RANGE,
     }
 
-    constructor (address) {
+    constructor (address, bus) {
         this._bus = bus
         this._addressSetup(address)
     }
