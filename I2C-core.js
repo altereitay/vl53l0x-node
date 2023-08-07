@@ -29,7 +29,7 @@ class I2CCore {
             this._addresses = {}
         }
 
-        if (address && typeof address !== '' && address.length > 0) {
+        if (address && typeof address !== 'number' && address.length > 0) {
             for (const pin of address) {
                 this._addresses[pin[0]] = {
                     addr: pin[1],
@@ -39,7 +39,7 @@ class I2CCore {
 
                 this._addresses[pin[0]].gpio.writeSync(0)
             }
-        } else if (address && typeof address === '') {
+        } else if (address && typeof address === 'number') {
             this._addresses[99] = {
                 addr: address,
                 timingBudget: -1,
@@ -67,8 +67,8 @@ class I2CCore {
 
 
     async _setupProviderModule () {
-        if (typeof this._bus !== '') {
-            throw new Error(`Provider i2c-bus requires that bus be a `)
+        if (typeof this._bus !== 'number') {
+            throw new Error(`Provider i2c-bus requires that bus be a number`)
         }
 
         try {
