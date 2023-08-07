@@ -4,7 +4,7 @@ const {timeoutMclksToMicroseconds} = require('./utils/calcs');
 const {calcCommonBudget} = require('./utils/budget');
 const {BinaryValue, Gpio} = require('onoff');
 
-export default class I2CCore {
+class I2CCore {
     _busModule
     _bus
     _addresses
@@ -244,3 +244,5 @@ export default class I2CCore {
         return ((await this._readReg(type, this._addresses[pin].addr)) + 1) << 1
     }
 }
+
+module.exports = {I2CCore};

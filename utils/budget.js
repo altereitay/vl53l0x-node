@@ -1,4 +1,4 @@
-export const calcCommonBudget = (budget_us, enables, timeouts) => {
+const calcCommonBudget = (budget_us, enables, timeouts) => {
     if (enables.tcc) {
         budget_us += timeouts.msrc_dss_tcc_us + 590 //TccOverhead
     }
@@ -15,3 +15,5 @@ export const calcCommonBudget = (budget_us, enables, timeouts) => {
 
     return budget_us
 }
+
+module.exports = {calcCommonBudget};

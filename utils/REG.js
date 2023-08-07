@@ -1,4 +1,4 @@
-export const REG = {
+const REG = {
     SYSRANGE_START: 0x000,
     SYSTEM_SEQUENCE_CONFIG: 0x01,
     SYSTEM_INTERMEASUREMENT_PERIOD: 0x04,
@@ -229,3 +229,5 @@ export const tuning = [
     0x80,
     0x00,
 ]
+
+module.exports = {REG};
