@@ -495,4 +495,4 @@ class VL53L0X extends I2CCore {
     }
 }
 
-module.exports = {VL53L0X};
+module.exports = VL53L0X;
