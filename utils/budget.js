@@ -1,19 +1,19 @@
-const calcCommonBudget = (budget_us, enables, timeouts) => {
+const calcCommonBudget = (budgetUs, enables, timeouts) => {
     if (enables.tcc) {
-        budget_us += timeouts.msrc_dss_tcc_us + 590 //TccOverhead
+        budgetUs += timeouts.msrcDssTccUs + 590 //TccOverhead
     }
 
     if (enables.dss) {
-        budget_us += 2 * (timeouts.msrc_dss_tcc_us + 690) //DssOverhead
+        budgetUs += 2 * (timeouts.msrcDssTccUs + 690) //DssOverhead
     } else if (enables.msrc) {
-        budget_us += timeouts.msrc_dss_tcc_us + 660 //MsrcOverhead
+        budgetUs += timeouts.msrcDssTccUs + 660 //MsrcOverhead
     }
 
-    if (enables.pre_range) {
-        budget_us += timeouts.pre_range_us + 660 //PreRangeOverhead
+    if (enables.preRange) {
+        budgetUs += timeouts.preRangeUs + 660 //PreRangeOverhead
     }
 
-    return budget_us
+    return budgetUs
 }
 
 module.exports = {calcCommonBudget};

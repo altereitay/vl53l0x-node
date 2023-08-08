@@ -1,12 +1,12 @@
 const decodeTimeout = (value) => {
     return ((value & 0x00ff) << ((value & 0xff00) >> 8)) + 1 // format: "(LSByte * 2^MSByte) + 1"}
 }
-const encodeTimeout = (timeout_mclks) => {
-    if (timeout_mclks <= 0) {
+const encodeTimeout = (timeoutMclks) => {
+    if (timeoutMclks <= 0) {
         return 0
     }
     // format: "(LSByte * 2^MSByte) + 1"
-    let lsb = timeout_mclks - 1
+    let lsb = timeoutMclks - 1
     let msb = 0
     while ((lsb & 0xffffff00) > 0) {
         lsb >>= 1
@@ -15,8 +15,8 @@ const encodeTimeout = (timeout_mclks) => {
     return (msb << 8) | (lsb & 0xff)
 }
 
-const encodeVcselPeriod = (period_pclks) => {
-    return (period_pclks >> 1) - 1
+const encodeVcselPeriod = (periodPclks) => {
+    return (periodPclks >> 1) - 1
 }
 
 module.exports = {decodeTimeout, encodeTimeout, encodeVcselPeriod};
