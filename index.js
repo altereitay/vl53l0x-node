@@ -160,7 +160,7 @@ class VL53L0X extends I2CCore {
                 let usedBudgetUs = budget.value;
 
                 if (budget.enables.finalRange) {
-                    usedBudgetUs += 550 ;// FinalRangeOverhead
+                    usedBudgetUs += 550;// FinalRangeOverhead
 
                     if (usedBudgetUs > budgetUs) {
                         throw new Error('Requested timeout too big.');
@@ -263,38 +263,13 @@ class VL53L0X extends I2CCore {
         }
     }
 
-    async getRangeMillimeters (pin) {
-        let range;
+    async getRangeMillimeters () {
+        await this.writeReg(REG.SYSRANGE_START, REG.SYSTEM_SEQUENCE_CONFIG, this.address);
+        let range = await this.readReg(this.options.regAddressRead, this.address, true);
+        await this.writeReg(REG.SYSTEM_INTERRUPT_CLEAR, REG.SYSTEM_SEQUENCE_CONFIG, this.address);
 
-        if (pin) {
-            if (this.address[pin]) {
-                // I guess we need to make sure the stop variable didn't change somehow...
-                // await protectedWrite(0x91, 0x01, stop_variable)
-                await this.writeReg(REG.SYSRANGE_START, REG.SYSTEM_SEQUENCE_CONFIG, this.address)
-                // assumptions: Linearity Corrective Gain is 1000 (default);
-                // fractional ranging is not enabled
-                range = await this.readReg(this.options.regAddressRead, this.address, true)
-                await this.writeReg(REG.SYSTEM_INTERRUPT_CLEAR, REG.SYSTEM_SEQUENCE_CONFIG, this.address)
+        return range;
 
-                return range
-            } else {
-                throw new Error(`Invalid pin number. Available Pins: [${Object.keys(this.address).map((pin) => " '" + pin + "' ")}]`)
-            }
-        }
-        /*
-        else {
-            for (const p of Object.keys(this.addresses)) {
-                // I guess we need to make sure the stop variable didn't change somehow...
-                // await protectedWrite(0x91, 0x01, stop_variable)
-                await this.writeReg(REG.SYSRANGE_START, REG.SYSTEM_SEQUENCE_CONFIG, this.addresses)
-                // assumptions: Linearity Corrective Gain is 1000 (default);
-                // fractional ranging is not enabled
-                range = await this.readReg(this.options.regAddressRead, this.addresses, true)
-                await this.writeReg(REG.SYSTEM_INTERRUPT_CLEAR, REG.SYSTEM_SEQUENCE_CONFIG, this.addresses);
-            }
-            return range;
-        }
-        */
     }
 
     async performSingleRefCalibrationInternal (vhvInitByte, pin) {
