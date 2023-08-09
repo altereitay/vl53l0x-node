@@ -142,40 +142,40 @@ class I2CCore {
 
 
     async getSpadInfo (pin) {
-        await this.writeReg(REG.POWER_MANAGEMENT_GO1_POWER_FORCE, REG.SYSTEM_SEQUENCE_CONFIG, this.address[pin].addr)
-        await this.writeReg(0xff, REG.SYSTEM_SEQUENCE_CONFIG, this.address[pin].addr) // select collection 1
-        await this.writeReg(REG.SYSRANGE_START, REG.SYSRANGE_START, this.address[pin].addr) // kinda like read-only=false?
+        await this.writeReg(REG.POWER_MANAGEMENT_GO1_POWER_FORCE, REG.SYSTEM_SEQUENCE_CONFIG, this.address)
+        await this.writeReg(0xff, REG.SYSTEM_SEQUENCE_CONFIG, this.address) // select collection 1
+        await this.writeReg(REG.SYSRANGE_START, REG.SYSRANGE_START, this.address) // kinda like read-only=false?
 
-        await this.writeReg(0xff, 0x06, this.address[pin].addr)
-        const x83 = await this.readReg(0x83, this.address[pin].addr) // return hex(x83)
-        await this.writeReg(0x83, x83 | REG.SYSTEM_INTERMEASUREMENT_PERIOD, this.address[pin].addr)
-        await this.writeReg(0xff, 0x07, this.address[pin].addr)
-        await this.writeReg(REG.SYSTEM_HISTOGRAM_BIN, REG.SYSTEM_SEQUENCE_CONFIG, this.address[pin].addr)
-        await this.writeReg(REG.POWER_MANAGEMENT_GO1_POWER_FORCE, REG.SYSTEM_SEQUENCE_CONFIG, this.address[pin].addr)
-        await this.writeReg(0x94, 0x6b, this.address[pin].addr)
-        await this.writeReg(0x83, REG.SYSRANGE_START, this.address[pin].addr)
+        await this.writeReg(0xff, 0x06, this.address)
+        const x83 = await this.readReg(0x83, this.address) // return hex(x83)
+        await this.writeReg(0x83, x83 | REG.SYSTEM_INTERMEASUREMENT_PERIOD, this.address)
+        await this.writeReg(0xff, 0x07, this.address)
+        await this.writeReg(REG.SYSTEM_HISTOGRAM_BIN, REG.SYSTEM_SEQUENCE_CONFIG, this.address)
+        await this.writeReg(REG.POWER_MANAGEMENT_GO1_POWER_FORCE, REG.SYSTEM_SEQUENCE_CONFIG, this.address)
+        await this.writeReg(0x94, 0x6b, this.address)
+        await this.writeReg(0x83, REG.SYSRANGE_START, this.address)
 
         // while ((await this._readReg(0x83)) === REG.SYSRANGE_START) {
         //   console.log('not ready') //I haven't gotten here yet
         // }
         // 0x83 seems to be 0x10 now
 
-        await this.writeReg(0x83, REG.SYSTEM_SEQUENCE_CONFIG, this.address[pin].addr)
+        await this.writeReg(0x83, REG.SYSTEM_SEQUENCE_CONFIG, this.address)
 
-        await this.writeReg(REG.SYSTEM_HISTOGRAM_BIN, REG.SYSRANGE_START, this.address[pin].addr)
-        await this.writeReg(0xff, 0x06, this.address[pin].addr)
+        await this.writeReg(REG.SYSTEM_HISTOGRAM_BIN, REG.SYSRANGE_START, this.address)
+        await this.writeReg(0xff, 0x06, this.address)
         await this.writeReg(
             0x83,
-            (await this.readReg(0x83, this.address[pin].addr)) & ~REG.SYSTEM_INTERMEASUREMENT_PERIOD,
-            this.address[pin].addr
+            (await this.readReg(0x83, this.address)) & ~REG.SYSTEM_INTERMEASUREMENT_PERIOD,
+            this.address
         )
 
-        await this.writeReg(0xff, REG.SYSTEM_SEQUENCE_CONFIG, this.address[pin].addr) // select collection 1
-        await this.writeReg(REG.SYSRANGE_START, REG.SYSTEM_SEQUENCE_CONFIG, this.address[pin].addr) // kinda like read-only=true?
-        await this.writeReg(0xff, REG.SYSRANGE_START, this.address[pin].addr) // always set back to the default collection
-        await this.writeReg(REG.POWER_MANAGEMENT_GO1_POWER_FORCE, REG.SYSRANGE_START, this.address[pin].addr)
+        await this.writeReg(0xff, REG.SYSTEM_SEQUENCE_CONFIG, this.address) // select collection 1
+        await this.writeReg(REG.SYSRANGE_START, REG.SYSTEM_SEQUENCE_CONFIG, this.address) // kinda like read-only=true?
+        await this.writeReg(0xff, REG.SYSRANGE_START, this.address) // always set back to the default collection
+        await this.writeReg(REG.POWER_MANAGEMENT_GO1_POWER_FORCE, REG.SYSRANGE_START, this.address)
 
-        const tmp = await this.readReg(0x92, this.address[pin].addr)
+        const tmp = await this.readReg(0x92, this.address)
 
         return {
             count: tmp & 0x7f,
@@ -184,7 +184,7 @@ class I2CCore {
     }
 
     async getSequenceStepEnables (pin) {
-        const sequenceConfig = await this.readReg(REG.SYSTEM_SEQUENCE_CONFIG, this.address[pin].addr)
+        const sequenceConfig = await this.readReg(REG.SYSTEM_SEQUENCE_CONFIG, this.address)
 
         return {
             msrc: (sequenceConfig >> 2) & 0x1,
@@ -197,16 +197,16 @@ class I2CCore {
 
     async getSequenceStepTimeouts (preRange, pin) {
         const preRangeVcselPeriodPclks = await this.getVcselPulsePeriodInternal(REG.PRE_RANGE_CONFIG_VCSEL_PERIOD, pin)
-        const msrcDssTccMclks = (await this.readReg(REG.MSRC_CONFIG_TIMEOUT_MACROP, this.address[pin].addr)) + 1
+        const msrcDssTccMclks = (await this.readReg(REG.MSRC_CONFIG_TIMEOUT_MACROP, this.address)) + 1
         const preRangeMclks = decodeTimeout(
-            await this.readReg(REG.PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI, this.address[pin].addr, true)
+            await this.readReg(REG.PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI, this.address, true)
         )
         const finalRangeVcselPeriodPclks = await this.getVcselPulsePeriodInternal(
             REG.FINAL_RANGE_CONFIG_VCSEL_PERIOD,
             pin
         )
         const finalRangeMclks =
-            decodeTimeout(await this.readReg(REG.FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI, this.address[pin].addr, true)) -
+            decodeTimeout(await this.readReg(REG.FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI, this.address, true)) -
             (preRange ? preRangeMclks : 0)
 
         return {
@@ -244,7 +244,7 @@ class I2CCore {
 
 
     async getVcselPulsePeriodInternal (type, pin) {
-        return ((await this.readReg(type, this.address[pin].addr)) + 1) << 1
+        return ((await this.readReg(type, this.address)) + 1) << 1
     }
 }
 
