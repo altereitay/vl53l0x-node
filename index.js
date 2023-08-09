@@ -1,6 +1,5 @@
 const {timeoutMicrosecondsToMclks} = require('./utils/calcs');
 const {encodeTimeout, encodeVcselPeriod} = require('./utils/encode-decode');
-const {BytesWritten} = require('i2c-bus')
 const {I2CCore} = require('./I2C-core');
 const {REG, tuning} = require('./utils/REG');
 
@@ -425,45 +424,6 @@ class VL53L0X extends I2CCore {
             return toReturn
         }
     }
-
-    async resetPinsAddresses () {
-        for (const pin of Object.keys(this.address)) {
-            if (this.address[pin].gpio) {
-                await this.gpioWrite(this.address[pin].gpio, 0)
-            }
-        }
-
-        for (const pin of Object.keys(this.address)) {
-            if (this.address[pin].gpio) {
-                await this.gpioWrite(this.address[pin].gpio, 1)
-            }
-        }
-    }
-
-    get api () {
-        return {
-            measure: this.getRangeMillimeters.bind(this),
-            resetPinsAddresses: this.resetPinsAddresses.bind(this),
-            config: this.config,
-            addresses: this.address,
-            scanAddressesBeingUsed: this.scan.bind(this),
-            setSignalRateLimit: this.setSignalRateLimit.bind(this),
-            getSignalRateLimit: this.getSignalRateLimit.bind(this),
-            getMeasurementTimingBudget: this.getMeasurementTimingBudget.bind(this),
-            setMeasurementTimingBudget: this.setMeasurementTimingBudget.bind(this),
-            setVcselPulsePeriod: this.setVcselPulsePeriod.bind(this),
-            getVcselPulsePeriod: this.getVcselPulsePeriod.bind(this),
-            performSingleRefCalibration: this.performSingleRefCalibration.bind(this),
-            io: {
-                write: this.write.bind(this),
-                writeReg: this.writeReg.bind(this),
-                writeMulti: this.writeMulti.bind(this),
-                readReg: this.readReg.bind(this),
-                readMulti: this.readMulti.bind(this),
-            },
-        }
-    }
-
 }
 
 module.exports = VL53L0X;
