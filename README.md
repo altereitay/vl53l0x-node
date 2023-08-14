@@ -1,6 +1,3 @@
-# Note
-**The code for multiple sensors has yet to be fully tested so issues may occur**
-
 Basically I took this library: https://github.com/rip3rs/vl53l0x 
 and removed the whole typescript part so it will be easier to work with Node.JS.
 
@@ -63,5 +60,34 @@ async function init () {
 
 init();
 ```
+# Known Problems
+If you have multiple sensors connected to same i2c bus, one of them may disconnect, when it will reconnect it will get the 
+default address (0x29), I overcome it by putting each sensor on a different i2c bus.
+
+Example Code for this problem:
+```javascript
+const VL53L0X = require('vl53l0x-node');
+console.log(VL53L0X)
+
+const vl53_1 = new VL53L0X(0x29, 1);
+const vl53_2 = new VL53L0X(0x29, 2);
+const vl53_3 = new VL53L0X(0x29, 3);
+
+async function init () {
+    await vl53_1.init();
+    await vl53_2.init();
+    await vl53_3.init();
+    setInterval(async () =>{
+        let mes1 = await vl53_1.getRangeMillimeters();
+        let mes2 = await vl53_2.getRangeMillimeters();
+        let mes3 = await vl53_3.getRangeMillimeters();
+        console.log(`mes1:${mes1},mes2:${mes2}, mes3:${mes3}`)
+    }, 1000)
+}
+
+init();
+
+```
+
 
 You may fork this however you would like and if you want you can also submit and issue and I will try to fix it.
