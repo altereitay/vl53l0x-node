@@ -5,7 +5,7 @@ const {REG, tuning} = require('./utils/REG');
 
 
 class VL53L0X extends I2CCore {
-    constructor (address = REG.I2C_DEFAULT_ADDR, bus = 1) {
+    constructor (address, bus = 1) {
         super(address, bus)
     }
 
@@ -39,7 +39,7 @@ class VL53L0X extends I2CCore {
     }
 
     async setup (pin) {
-        await this.writeReg(REG.I2C_SLAVE_DEVICE_ADDRESS, this.address, REG.I2C_DEFAULT_ADDR);
+        await this.writeReg(REG.I2C_SLAVE_DEVICE_ADDRESS, this.address, this.address);
         // "Set I2C standard mode"
         await this.writeReg(REG.I2C_STANDARD_MODE, REG.SYSRANGE_START, this.address);
 
